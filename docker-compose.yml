@@ -1,0 +1,42 @@
+#Yakovlev
+version: '3.1'
+
+services:
+#http://localhost:8081/items/5?q=somequery
+  fastapi:
+    build: ./
+    ports:
+      - 8081:80
+    networks:
+      - backend
+
+
+  db:
+    container_name: db
+    image: postgres:alpine3.17
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+       POSTGRES_PASSWORD: root
+       POSTGRES_USER: admin
+       #PGDATA: "/var/lib/postgresql/data/pgdata"
+       #POSTGRES_DB: admin
+    networks:
+      - backend
+      
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    environment: 
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: galkaev
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
